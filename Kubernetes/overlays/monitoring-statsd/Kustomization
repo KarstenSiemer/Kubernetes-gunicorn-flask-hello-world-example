@@ -1,0 +1,58 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+patches:
+- deployment-loggingSidecar.yaml
+- service-loggingSidecar.yaml
+
+configMapGenerator:
+- name: statsd-exporter-mapping-config
+  files:
+  - mapping-config.yaml
+
+vars:
+- name: STATSD_METRICS_PORT
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[0].containerPort
+- name: STATSD_LISTENER_PORT
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[1].containerPort
+- name: STATSD_METRICS_PORT_NAME
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[0].name
+- name: STATSD_LISTENER_PORT_NAME
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[1].name
+- name: STATSD_METRICS_PROTOCOL
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[0].protocol
+- name: STATSD_LISTENER_PROTOCOL
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[1].ports[1].protocol

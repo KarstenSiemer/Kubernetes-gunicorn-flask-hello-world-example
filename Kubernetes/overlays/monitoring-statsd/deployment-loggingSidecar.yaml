@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+spec:
+  template:
+    spec:
+      containers:
+      - name: hello-world
+        command:
+        - gunicorn
+        args:
+        - --statsd-host=localhost:$(STATSD_LISTENER_PORT)
+        - --statsd-prefix=hello_world
+        - --bind=0.0.0.0:$(PORT)
+        - app
+      - name: statsd
+        image: prom/statsd-exporter:v0.12.2
+        args:
+        - --statsd.mapping-config=/statsd-exporter/mapping-config.yaml
+        ports:
+        - containerPort: 9102
+          name: metrics
+          protocol: TCP
+        - containerPort: 9125
+          name: listener
+          protocol: UDP
+        resources:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /statsd-exporter/
+          name: statsd-exporter-mapping-config
+          readOnly: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: mapping-config.yaml
+            path: mapping-config.yaml
+          name: statsd-exporter-mapping-config
+        name: statsd-exporter-mapping-config

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world
+spec:
+  ports:
+  - name: $(STATSD_METRICS_PORT_NAME)
+    port: $(STATSD_METRICS_PORT)
+    protocol: $(STATSD_METRICS_PROTOCOL)
+    targetPort: $(STATSD_METRICS_PORT_NAME)
+  - name: $(STATSD_LISTENER_PORT_NAME)
+    port: $(STATSD_LISTENER_PORT)
+    protocol: $(STATSD_LISTENER_PROTOCOL)
+    targetPort: $(STATSD_LISTENER_PORT_NAME)

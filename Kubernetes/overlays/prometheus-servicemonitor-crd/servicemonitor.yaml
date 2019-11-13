@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-world
+spec:
+  endpoints:
+  - port: $(STATSD_METRICS_PORT_NAME)
+    interval: 15s
+    scrapeTimeout: 15s
+  selector:
+    matchLabels: {}

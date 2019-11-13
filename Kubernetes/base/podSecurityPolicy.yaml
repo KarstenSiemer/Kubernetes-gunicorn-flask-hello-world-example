@@ -1,0 +1,47 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: hello-world
+  annotations:
+    #Annotation that specifies the default seccomp profile to apply to containers
+    #Seccomp (short for secure computing) is a Linux kernel mechanism that lets you restrict the system calls a process can use.
+    #https://github.com/jessfraz/docker/blob/52f32818df8bad647e4c331878fa44317e724939/docs/security/seccomp.md
+    #https://github.com/jessfraz/docker/blob/6837cfc13cba842186a7261aa9bbd3a8755fd11e/docs/security/non-events.md
+    #seccomp is turned off by kubernetes default, this setting will activate it as a default.
+    seccomp.security.alpha.kubernetes.io/defaultProfileName:  'docker/default'
+    #Here this default is being set as mandatory, so that no one can set it as unconfined
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default'
+spec:
+  #determines if any container in a pod can enable privileged mode
+  privileged: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  allowPrivilegeEscalation: false
+  #Provides a whitelist of capabilities that may be added to a container. The default set of capabilities are implicitly allowed. The empty set means that no additional capabilities may be added beyond the default set
+  #Default: CHOWN, DAC_OVERRIDE, FSETID, FOWNER, MKNOD, NET_RAW, SETGID, SETUID, SETFCAP, SETPCAP, NET_BIND_SERVICE, SYS_CHROOT, KILL, AUDIT_WRITE
+  allowedCapabilities: []
+  #SELinux is basically just a labeling system inside the kernel
+  #Each container should run in its own independent SELinux context, increasing isolation between containers and providing another layer of protection should a container be compromised.
+  #Unlike seccomp a process which is restricted by SELinux will not grant any more priviledges if a process is able to do privilege escalation due to a bug or something like that.
+  #SELinux enforcement is currently incompatible with Btrfs volumes and volumes that are shared between multiple containers.
+  seLinux:
+    rule: 'RunAsAny'
+  #The deployment only uses configmaps, so deny anything else
+  volumes:
+  - 'configMap'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  #Forbid adding the root group
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  #The is nothing we need to write and even if, it should be done on a mounted fs
+  readOnlyRootFilesystem: true

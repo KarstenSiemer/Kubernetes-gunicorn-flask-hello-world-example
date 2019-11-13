@@ -1,0 +1,10 @@
+commonLabels:
+- path: spec/selector/matchLabels
+  group: monitoring.coreos.com
+  version: v1
+  kind: ServiceMonitor
+  create: true
+
+varReference:
+- kind: ServiceMonitor
+  path: spec/endpoints/port

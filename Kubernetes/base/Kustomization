@@ -1,0 +1,67 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+- podDisruptionBudget.yaml
+- serviceAccount.yaml
+- role.yaml
+- roleBinding.yaml
+- podSecurityPolicy.yaml
+- netpol.yaml
+
+namespace: default
+
+commonLabels:
+  app.kubernetes.io/name: hello-world
+  app.kubernetes.io/part-of: hello-world
+
+configurations:
+- configurations.yaml
+
+vars:
+- name: APP_NAME
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+- name: NAMESPACE
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: metadata.namespace
+- name: PORT
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[0].ports[0].containerPort
+- name: PORT_NAME
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[0].ports[0].name
+- name: PROTOCOL
+  objRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world
+  fieldref:
+    fieldpath: spec.template.spec.containers[0].ports[0].protocol
+- name: SERVICE
+  objRef:
+    apiVersion: v1
+    kind: Service
+    name: hello-world
+- name: SERVICEACCOUNT
+  objRef:
+    apiVersion: v1
+    kind: ServiceAccount
+    name: hello-world

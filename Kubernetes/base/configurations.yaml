@@ -1,0 +1,34 @@
+varReference:
+- kind: Service
+  path: spec/ports/name
+- kind: Service
+  path: spec/ports/protocol
+- kind: Deployment
+  path: spec/template/spec/serviceAccountName
+- kind: Deployment
+  path: spec/template/spec/containers/livenessProbe/httpGet/port
+- kind: Deployment
+  path: spec/template/spec/containers/readinessProbe/httpGet/port
+- kind: Ingress
+  path: spec/rules/http/paths/backend/serviceName
+- kind: Ingress
+  path: spec/rules/http/paths/backend/servicePort
+- kind: RoleBinding
+  path: subjects/namespace
+- kind: ServiceMonitor
+  path: spec/endpoints/port
+
+nameReference:
+- kind: ServiceAccount
+  version: v1
+  fieldSpecs:
+  - group: rbac.authorization.k8s.io
+    kind: RoleBinding
+    path: subjects/name
+
+commonLabels:
+- path: spec/selector/matchLabels
+  group: monitoring.coreos.com
+  version: v1
+  kind: ServiceMonitor
+  create: true
