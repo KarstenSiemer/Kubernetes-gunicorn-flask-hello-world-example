@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - ../prometheus-servicemonitor-crd
+- ../ingress-ssl
 
 namePrefix: frodo-
 namespace: dev-namespace

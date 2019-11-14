@@ -6,17 +6,8 @@ metadata:
     certmanager.k8s.io/acme-dns01-provider: akamai-fastdns
     certmanager.k8s.io/cluster-issuer: letsencrypt
     ingress.kubernetes.io/ssl-redirect: "true"
-  labels:
-    app.kubernetes.io/component: application-server
   name: hello-world
 spec:
-  rules:
-  - host: $(APP_NAME).$(NAMESPACE).karstensiemer.de
-    http:
-      paths:
-      - backend:
-          serviceName: $(SERVICE)
-          servicePort: $(PORT_NAME)
   tls:
   - hosts:
     - $(APP_NAME).$(NAMESPACE).karstensiemer.de

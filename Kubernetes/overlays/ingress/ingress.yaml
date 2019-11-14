@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/component: application-server
+  name: hello-world
+spec:
+  rules:
+  - host: $(APP_NAME).$(NAMESPACE).karstensiemer.de
+    http:
+      paths:
+      - backend:
+          serviceName: $(SERVICE)
+          servicePort: $(PORT_NAME)
