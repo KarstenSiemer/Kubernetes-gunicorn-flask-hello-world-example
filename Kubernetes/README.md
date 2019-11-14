@@ -22,5 +22,6 @@ Here you'll find two folders:
     * They pull the manifest from prometheus-servicemonitor-crd. Reconfigure the resource to monitoring-statsd or create an additional overlay to get the manifest that you need for your environment
     * Here are namePrefixes set, they make it easier to look at all logs from all pods of this deployment using a tool like [stern](https://github.com/wercker/stern)
       Additionally they make the view of `kubectl get pods` more beautiful because it is sorted alphabetically so that prefixed pods are bundled in view. This bundling will happen either way if your are only using one component like here, but imagine having several deployments and statefulsets will completly different names apart from the prefix.
+      If there are more than one manifest but they all belong to some project, i like to use prefixes that somewhat correlate. Like here i used character from [lotr](https://en.wikipedia.org/wiki/The_Lord_of_the_Rings). Then you easily point to different manifest when talking to collegues.
     * I'd suggest that you'll use an ci/cd tool like [argocd](https://github.com/argoproj/argo-cd) to deploy such a manifest
   
